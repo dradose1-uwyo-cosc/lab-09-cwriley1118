@@ -4,7 +4,7 @@
 # Lab 09
 # Lab Section: 15
 # Sources, people worked with, help given to:
-#
+# Used https://programming-21.mooc.fi/part-4/5-print-statement-formatting to learn how to limit the floating point number to 2 decimal points for the $ values
 
 # Classes
 # For this assignment, you will be creating two classes:
@@ -129,3 +129,58 @@ Your total price is $12.9
 
 Would you like to place an order? exit to exit
 """
+
+class Pizzeria:
+    def __init__(self):
+        """default values for the pizzeria"""
+        self.orders = 0
+        self.price_for_each_topping = 0.30
+        self.price_for_each_inch = 0.60
+        self.pizzas = []
+
+    def place_order(self):
+        """function for placing a new pizza order"""
+        self.orders += 1
+        size = int(input("Please enter a whole number size of pizza. The smallest size is 10: "))
+        sauce = input("What kind of sauce would you like? Leave blank for red sauce: ")
+        if not sauce:
+            sauce = 'red'
+        toppings = []
+        topping = input("Please enter a topping, leave blank when done: ")
+        while topping:
+                toppings.append(topping)
+                topping = input("Please enter a topping, leave blank when done: ")
+        pizza = Pizza(size, sauce)
+        pizza.add_toppings(*toppings)
+        self.pizzas.append(pizza)
+    
+    def get_price(self, pizza_index):
+        """Calculates price of pizza"""
+        pizza = self.pizzas[pizza_index]
+        return (pizza.get_size() * self.price_for_each_inch) + (pizza.get_topping_count() * self.price_for_each_topping)
+        
+    def get_receipt(self, pizza_index):
+        """Prints receipt for the pizza"""
+        pizza = self.pizzas[pizza_index]
+        print(f"You ordered a {pizza.get_size()} pizza with {pizza.get_sauce()} sauce and the following toppings:")
+        for topping in pizza.toppings:
+            print(f"\t {topping}")
+        print(f"You ordered a {pizza.get_size()} pizza for ${self.price_for_each_inch * pizza.get_size():.2f}")
+        print(f"You had {pizza.get_topping_count()} topping(s) for ${self.price_for_each_topping * pizza.get_topping_count():.2f}")
+        print(f"Your total price is ${self.get_price(pizza_index):.2f}")
+    
+    def get_number_of_orders(self):
+        """Returns the total number of orders"""
+        return self.orders
+
+pizzeria = Pizzeria()
+
+while True:
+    order = input("Would you like to place an order? type 'exit' to quit: ")
+    if order.lower() == 'exit':
+        break
+    pizzeria.place_order()
+    pizzeria.get_receipt(pizzeria.orders - 1)
+
+print(f"\n{pizzeria.get_number_of_orders()} orders were placed.")
+
